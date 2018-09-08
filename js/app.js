@@ -5,6 +5,20 @@ const cards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane', 'fa-paper-plane', '
 
 document.querySelector('.congratsPopup').style.display = "none";
 
+let timerStarted=false;
+let secondsPassed;
+
+
+function timerBegins(){
+  if (timerStarted === false) {
+    timerStarted = true;
+    let timer = setInterval (function (){
+      console.log('works');
+      secondsPassed ++;
+      document.querySelector('.totalTime').innerHTML = `Total Time: ${secondsPassed}`;}, 1000);
+  }
+}
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -31,19 +45,12 @@ getCardsInHTML();
 let cardDeck = document.querySelectorAll('.card');
 let flippedCards = [];
 let numberMatches = 0;
+let movesCounter = 0;
 
-let timer = new Timer({
-  tick: 1,
-  ontick: function (seconds) {
-    seconds += 1;
-  },
-  onend: function() {
-    document.querySelector('.totalTime').innerHTML = `Total Time: ${seconds}`;
-  }
-});
 
 cardDeck.forEach(function (card) {
   card.addEventListener('click', function(events) {
+    timerBegins();
     if (!card.classList.contains('show') && !card.classList.contains('open') && !card.classList.contains('match')) {
       if (flippedCards.length<=1){
         flippedCards.push(card);
@@ -78,7 +85,6 @@ function checkMatch() {
 }
 
 
-let movesCounter = 0;
 function countMoves() {
   const moves = document.querySelector('.moves');
   movesCounter += 1;
@@ -124,15 +130,6 @@ function removeStars(){
 document.querySelector('.playAgain').addEventListener('click', function(){
   refreshPage();
 });
-
-if (movesCounter >=1 ) {
-    timer.on('start', function () {
-      console.log('timer started');
-    });
-  }
-
-
-
 
 
 
