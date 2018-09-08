@@ -1,30 +1,28 @@
 /*
  * Create a list that holds all of your cards
  */
-const cards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane', 'fa-paper-plane', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt', 'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bicycle', 'fa-bicycle', 'fa-bomb', 'fa-bomb'];
+const cards = [
+  'fa-diamond', 'fa-diamond',
+  'fa-paper-plane', 'fa-paper-plane',
+  'fa-anchor', 'fa-anchor',
+  'fa-bolt', 'fa-bolt',
+  'fa-cube', 'fa-cube',
+  'fa-leaf', 'fa-leaf',
+  'fa-bicycle', 'fa-bicycle',
+  'fa-bomb', 'fa-bomb'
+];
 
+//hides popup initially
 document.querySelector('.congratsPopup').style.display = "none";
 
+//initializes variables
 let timerStarted=false;
-let secondsPassed;
+let secondsPassed = 0;
+let flippedCards = [];
+let numberMatches = 0;
+let movesCounter = 0;
+let timer;
 
-
-function timerBegins(){
-  if (timerStarted === false) {
-    timerStarted = true;
-    let timer = setInterval (function (){
-      console.log('works');
-      secondsPassed ++;
-      document.querySelector('.time').innerHTML = `${secondsPassed}`;}, 1000);
-  }
-}
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
 //randomly shuffles through cards
 shuffle(cards);
 //gets cards to display in HTML on page
@@ -39,22 +37,26 @@ function getCardsInHTML(){
   cards display with an apostrophe between them*/
   deck.innerHTML = cardsHTML.join('');
 }
-
+//calls function to get cards to display
 getCardsInHTML();
 
 let cardDeck = document.querySelectorAll('.card');
-let flippedCards = [];
-let numberMatches = 0;
-let movesCounter = 0;
 
-
+//goes through each card in cardDeck
 cardDeck.forEach(function (card) {
+  //adds event listener to each card
   card.addEventListener('click', function(events) {
+    //starts timer after initial click
     timerBegins();
+    /*checks to make sure no card contains any of the show, match, or open
+    classes before allowing for click*/
     if (!card.classList.contains('show') && !card.classList.contains('open') && !card.classList.contains('match')) {
+      //only allows the flippedCards array to hold 2
       if (flippedCards.length<=1){
         flippedCards.push(card);
         card.classList.add('open','show');
+        /*for each time two cards are flipped, adds a move, checks to see if
+        they match and checks to see if the number of stars should be reduced*/
         if (flippedCards.length===2) {
           countMoves();
           checkMatch();
@@ -65,16 +67,24 @@ cardDeck.forEach(function (card) {
     });
   });
 
+/*checks to see if there is a match between the outercard class of the two in
+flipped cards*/
 function checkMatch() {
   if (flippedCards[0].dataset.outercard===flippedCards[1].dataset.outercard){
     flippedCards[0].classList.add('match');
     flippedCards[1].classList.add('match');
     flippedCards = [];
     numberMatches += 1;
+    /*checks to see if the number of matches is 8 for a win game and if it is
+    pop the win game popup, turn off the timer, and set totalTime var*/
     if (numberMatches===8) {
       popThePopup();
+      timerEnds();
+      document.querySelector('.totalTime').innerHTML = `Total Time: ${secondsPassed}`;
     }
   }
+  /*if there is no match, flip the cards back over and clear flippedcards array
+  after 1 second*/
   else {
     setTimeout (function(){
         flippedCards[0].classList.remove('open','show');
@@ -84,29 +94,29 @@ function checkMatch() {
   }
 }
 
-
+//update the moves counter display
 function countMoves() {
   const moves = document.querySelector('.moves');
   movesCounter += 1;
   moves.innerHTML = movesCounter;
 }
 
-
-
+//set the refresh button to be clickable and call refresh page
 const refreshButton = document.querySelector('.restart')
 refreshButton.addEventListener('click', function() {
   refreshPage();
 });
 
+//reload document page from: https://www.w3schools.com/jsref/met_loc_reload.asp
 function refreshPage() {
   document.location.reload();
 }
 
-
+//change the popup display from none to block
 function popThePopup() {
     document.querySelector('.congratsPopup').style.display = "block";
   }
-
+//set the number of stars displayed based on number of moves
 function removeStars(){
   let countStars = 3;
   if (movesCounter>8){
@@ -120,20 +130,36 @@ function removeStars(){
     document.querySelector('#star2').style.display = "none";
     document.querySelector('#star3').style.display = "none";
   }
-  function getTotalStarsInHTML(){
+  //display final amount of stars in popup
+  function getTotalStars(){
     const totalStars = document.querySelector('.totalStars');
-    totalStars.innerHTML = `TotalStars: ${countStars}`;
+    totalStars.innerHTML = `Total Stars: ${countStars}`;
   }
-  getTotalStarsInHTML();
+  getTotalStars();
 }
 
+//set the play again button on popup to refresh the page
 document.querySelector('.playAgain').addEventListener('click', function(){
   refreshPage();
 });
 
+/*set the function to start the timer only if it has not already started (true)
+and add seconds to the display clock. thanks to classmate Stefan R for the
+idea to use a boolean to test*/
+function timerBegins(){
+  if (timerStarted === false) {
+    timerStarted = true;
+    timer = setInterval (function (){
+      console.log('works');
+      secondsPassed ++;
+      document.querySelector('.time').innerHTML = `${secondsPassed}`;}, 1000);
+  }
+}
 
-
-
+//clears the interval
+function timerEnds(){
+  clearInterval(timer);
+}
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
