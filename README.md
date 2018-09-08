@@ -24,13 +24,13 @@ Date: September 8, 2018
 
 For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
-##About
+## About
 The Memory Game project is a basic card matching game in which the user tries to
 match two cards. There are 8 different types of cards, and 16 in total. When the
 user selects two cards, if they are a match, the cards stay flipped over. If they
 are not, they flip back over.
 
-##Functions
+## Functions
 shuffle automatically shuffles the cards array so that the cards are displayed
 randomly for the user. It accepts an array argument.
 
