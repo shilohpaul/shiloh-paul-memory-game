@@ -32,15 +32,18 @@ let cardDeck = document.querySelectorAll('.card');
 let flippedCards = [];
 let numberMatches = 0;
 
+let timer = new Timer({
+  tick: 1,
+  ontick: function (seconds) {
+    seconds += 1;
+  },
+  onend: function() {
+    document.querySelector('.totalTime').innerHTML = `Total Time: ${seconds}`;
+  }
+});
 
 cardDeck.forEach(function (card) {
   card.addEventListener('click', function(events) {
-    let secondsPassed = 0;
-    let timer = setInterval(function timeMe() {
-      secondsPassed++;
-      let time = document.querySelector('.time');
-      time.innerHTML = secondsPassed;
-    }, 1000);
     if (!card.classList.contains('show') && !card.classList.contains('open') && !card.classList.contains('match')) {
       if (flippedCards.length<=1){
         flippedCards.push(card);
@@ -49,15 +52,9 @@ cardDeck.forEach(function (card) {
           countMoves();
           checkMatch();
           removeStars();
-          clearInterval(timer);
-          function getTotalTime(){
-            const totalTime = document.querySelector('.totalTime');
-            totalTime.innerHTML = `Total Time: ${secondsPassed}`;
           }
-          getTotalTime();
         }
       }
-     }
     });
   });
 
@@ -128,7 +125,11 @@ document.querySelector('.playAgain').addEventListener('click', function(){
   refreshPage();
 });
 
-
+if (movesCounter >=1 ) {
+    timer.on('start', function () {
+      console.log('timer started');
+    });
+  }
 
 
 
