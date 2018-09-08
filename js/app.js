@@ -15,7 +15,7 @@ function timerBegins(){
     let timer = setInterval (function (){
       console.log('works');
       secondsPassed ++;
-      document.querySelector('.totalTime').innerHTML = `Total Time: ${secondsPassed}`;}, 1000);
+      document.querySelector('.time').innerHTML = `${secondsPassed}`;}, 1000);
   }
 }
 
